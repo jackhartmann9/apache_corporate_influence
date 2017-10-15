@@ -1,0 +1,13 @@
+SELECT a.svn_id as SOURCE, b.svn_id as Target, count(a.project_name) as Weight, a.organization_name as Org1, b.organization_name as Org2
+FROM test.apache_committers a
+INNER JOIN test.apache_committers b ON a.project_name=b.project_name
+WHERE a.datasource_id = 70910 AND b.datasource_id = 70910
+AND (a.organization_name = 'Cloudera' Or a.organization_name = 'Hortonworks' Or a.organization_name = 'IBM' OR a.organization_name = '
+Adobe')
+AND a.project_name <> 'incubator'
+AND a.project_name NOT LIKE '%pmc'
+AND b.project_name <> 'incubator'
+AND b.project_name NOT LIKE '%pmc'
+AND a.svn_id != b.svn_id
+GROUP BY 1,2
+ORDER BY 3 DESC

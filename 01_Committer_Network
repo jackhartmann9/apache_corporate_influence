@@ -1,0 +1,25 @@
+SELECT a.project_name as Source, b.project_name as Target, count(a.project_name) as Weight
+FROM apache_meta.apache_committers a
+INNER JOIN apache_meta.apache_committers b ON a.svn_id=b.svn_id
+WHERE a.project_name <> 'incubator'
+AND a.project_name NOT LIKE '%pmc'
+AND a.project_name <> 'member'
+AND a.project_name <> 'apsite' 
+AND a.project_name <> 'pmc-chairs'
+AND a.project_name <> 'commons'
+ANd a.project_name <> 'infrastructure'
+AND a.project_name <> 'apsite'
+AND a.project_name <> 'ws'
+AND b.project_name <> 'incubator'
+AND b.project_name NOT LIKE '%pmc'
+AND b.project_name <> 'member'
+AND b.project_name <> 'apsite' 
+AND b.project_name <> 'pmc-chairs'
+AND b.project_name <> 'commons'
+ANd b.project_name <> 'infrastructure'
+AND b.project_name <> 'apsite'
+AND b.project_name <> 'ws'
+AND a.project_name != b.project_name
+AND a.project_name < b.project_name
+GROUP BY 1,2
+ORDER BY 3 DESC

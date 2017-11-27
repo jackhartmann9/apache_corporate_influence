@@ -1,0 +1,87 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Nov  3 14:42:51 2017
+
+@author: Jack Hartmann
+"""
+import pymysql
+   
+pw = ''
+dbuser = ''
+db = 'apache'
+dbhost = 'flossdata.syr.edu'
+dbconn = pymysql.connect(host= dbhost,
+                         user= dbuser,
+                         passwd= pw,
+                         db= db,
+                         use_unicode=True,
+                         charset="utf8mb4")
+cursor = dbconn.cursor()
+getProjects = 'SELECT project_name, project_id \
+                 FROM apache_projects'
+          
+def tName(projectDB):
+    getTableNames = 'SELECT TABLE_NAME FROM TABLES WHERE TABLE_SCHEMA = "' + projectDB + '"'
+    dbconn3 = pymysql.connect(host= dbhost,
+                         user= dbuser,
+                         passwd= pw,
+                         db= 'information_schema',
+                         use_unicode=True,
+                         charset="utf8mb4")
+    cursor3 = dbconn3.cursor()
+    cursor3.execute(getTableNames)
+    tables = cursor3.fetchall()
+    dbconn3.close()
+    return tables
+    
+def newConn(projectName, projectId):
+    if '.' in projectName:
+        projectName = projectName.replace('.','_')
+    datab = "apache_"+ projectName
+    datab.replace(' ','')
+    tables = tName(datab)
+    for table in tables:
+        table_name = table[0]
+        getEmailMeta = 'Select email_id, from_email, email_list, \
+                               subject, from_name, email_date_clean, email_date,\
+                               message_id FROM ' + table_name 
+        dbconn2 = pymysql.connect(host= dbhost,
+                             user= dbuser,
+                             passwd= pw,
+                             db= datab,
+                             use_unicode=True,
+                             charset="utf8mb4")
+        cursor2 = dbconn2.cursor()
+        cursor2.execute(getEmailMeta)
+        metadata = cursor2.fetchall()
+        dbconn2.close()
+        print(table_name, "                 ", datab)
+        for data in metadata:
+            insertData(data, projectId)
+        
+def insertData(data, projectId):
+#    time.sleep(2)
+#    print(data[6])
+#    print(data[0],data[1],data[2],data[3],data[4],data[5],data[6], data[7], projectId)
+
+    insert = 'INSERT INTO apache_email_metadata \
+                            (email_list_id_num, email_address_from,\
+                            email_list,subject, from_name, \
+                            email_date, email_date_text, message_id, project_id) \
+                            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)'
+    try:    
+        cursor.execute(insert, (data[0],data[1],data[2],data[3],data[4],data[5],data[6],data[7], projectId))
+        dbconn.commit()
+    except pymysql.Error as error:
+        print(error)
+        dbconn.rollback() 
+    
+cursor.execute(getProjects)
+projects = cursor.fetchall()
+for project in projects:
+    name = project[0]
+    idNum = project[1]
+    newConn(name, idNum)
+dbconn.close()
+
+          

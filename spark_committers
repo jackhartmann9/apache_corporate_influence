@@ -1,6 +1,7 @@
-*gets email address and name relationships with email count
-SELECT email_address_from, from_name, count(message_id)
+#Fill spark email table with emails and cooresponding real names from mbox file
+INSERT INTO spark_email_matching (email, real_name)
+SELECT email_address_from, from_name
 From apache_spark_email_data
-WHERE email_address_from not LIKE '%git@git.apache%'
+WHERE email_address_from not LIKE '%git@git.apache%' and from_name not like '%=?%'
 Group by 1,2
-ORDER BY 3 DESC
+order by count(message_id) DESC

@@ -1,0 +1,7 @@
+Track Emails by the founders
+
+Select year(email_date), month(email_date), from_name, count(*)
+From apache_spark_email_data
+Where from_name Like "%ghod%" or from_name LIKE "%stoi%" or from_name LIKE "%zahar%"
+Group by 1,2,3
+Order by 1,2

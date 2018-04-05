@@ -5,3 +5,10 @@ From apache_spark_email_data
 Where from_name Like "%ghod%" or from_name LIKE "%stoi%" or from_name LIKE "%zahar%"
 Group by 1,2,3
 Order by 1,2
+
+Select year(e.email_date), month(e.email_date), c.organization, count(*)
+From apache_committers c
+INNER JOIN apache_spark_email_data e on e.from_name = c.real_name
+where e.email_address_from not LIKE '%@git%' and c.organization is not null and c.organization = 'Databricks'
+Group by 1,2,3
+Order by 1,2

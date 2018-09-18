@@ -6,5 +6,8 @@ AND a.svn_id != b.svn_id
 AND a.organization_name <> b.organization_name
 AND a.organization_name < b.organization_name
 AND a.svn_id < b.svn_id
+AND a.organization_name <> ASF
+AND b.organization_name <> ASF
 GROUP BY 1,2
+HAVING weight > 50
 ORDER BY 3 DESC

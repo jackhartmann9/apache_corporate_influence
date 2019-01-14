@@ -11,3 +11,16 @@ AND b.organization_name <> ASF
 GROUP BY 1,2
 HAVING weight > 50
 ORDER BY 3 DESC
+
+
+
+
+
+SELECT a.organization_name as Org1, b.organization_name as Org2
+FROM apache_committers a
+INNER JOIN apache_committers b on a.project_name=b.project_name
+AND a.project_name <> 'incubator'
+AND a.project_name NOT LIKE '%pmc'
+AND b.project_name <> 'incubator'
+AND b.project_name NOT LIKE '%pmc'
+Order BY 1

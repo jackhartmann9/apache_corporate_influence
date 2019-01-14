@@ -24,3 +24,19 @@ AND a.project_name NOT LIKE '%pmc'
 AND b.project_name <> 'incubator'
 AND b.project_name NOT LIKE '%pmc'
 Order BY 1
+
+
+
+SELECT a.organization as Org1, b.organization as Org2, count(a.committer_id)
+FROM 
+	(SELECT c.committer_id, c.organization, d.project_id
+	FROM apache_committers c
+	INNER JOIN apache_committer_projects d on c.committer_id = c.committer_id
+	WHERE c.organization is not null) a
+INNER JOIN 
+	(SELECT c.committer_id, c.organization, d.project_id
+	FROM apache_committers c
+	INNER JOIN apache_committer_projects d on c.committer_id = c.committer_id
+	WHERE c.organization is not null) b
+    on a.project_id=b.project_id
+Group by 1

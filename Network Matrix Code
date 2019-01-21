@@ -1,0 +1,56 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Nov  3 14:42:51 2017
+
+@author: Jack Hartmann
+"""
+import pymysql
+import csv
+pw = ''
+dbuser = ''
+db = 'apache'
+dbhost = ''
+dbconn = pymysql.connect(host= dbhost,
+                         user= dbuser,
+                         passwd= pw,
+                         db= db,
+                         use_unicode=True,
+                         charset="utf8mb4")
+cursor = dbconn.cursor()
+getProjects = 'SELECT count(*)\
+                 FROM project_organization\
+                 WHERE organization = %s AND project = %s'
+                 
+
+with open(r'C:\Users\jhartmann\Desktop\matrix.csv', newline='') as csvfile:
+    data = list(csv.reader(csvfile))
+
+
+#dt = list(csv.reader(open(r'C:\Users\jhartmann\Desktop\matrix.csv', 'rt')))
+#data = list(csv.writer(open(r'C:\Users\jhartmann\Desktop\matrix2.csv', 'wt')))
+row = 1
+while(row < 276):
+    col = 1
+    print(row)
+    while (col < 168):
+        print(data[row][0], data[0][col])
+        cursor.execute(getProjects,(data[row][0], data[0][col]))
+        count = cursor.fetchall()
+        for c in count:
+            if c[0] > 0:
+               # print(c[0], row, col)
+                data[row][col] = c[0]
+            else:
+                data[row][col] = 0
+        col+=1
+    row+=1
+try:
+    with open(r'C:\Users\jhartmann\Desktop\matrix2.csv', 'wb') as myfile:
+         wr = csv.writer(myfile)
+         wr.writerows(data)
+except:
+    with open(r'C:\Users\jhartmann\Desktop\matrix2.csv', 'wt') as myfile:
+         wr = csv.writer(myfile)
+         wr.writerows(data)
+
+            
